@@ -1,50 +1,206 @@
-# Welcome to your Expo app 👋
+Εφαρμογή Κράτησης Εστιατορίων
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+CN6035 - Mobile & Distributed Systems  
+Θέμα: Ανάπτυξη Mobile εφαρμογής για κρατήσεις σε εστιατόρια
 
-## Get started
+Μια εφαρμογή για κινητά που επιτρέπει στους χρήστες να κάνουν κρατήσεις σε εστιατόρια. Περιλαμβάνει εγγραφή/σύνδεση χρηστών, αναζήτηση εστιατορίων και διαχείριση κρατήσεων.
 
-1. Install dependencies
+## ΕΠΙΛΟΓΗ 1: Γρήγορη εγκατάσταση (μόνο το APK)
 
-   ```bash
-   npm install
-   ```
+Αν θέλετε απλά να δοκιμάσετε την εφαρμογή:
 
-2. Start the app
+1. Πηγαίνετε στο: https://expo.dev/accounts/theodotsis19/projects/res_app/builds
+2. Κάντε κλικ στο πιο πρόσφατο Android build (Status: finished)
+3. Κατεβάστε το APK από το "Artifact" link
+4. Επιτρέψτε την εγκατάσταση από άγνωστες πηγές στο Android
+5. Εγκαταστήστε το APK
+6. Συνδεθείτε με: user@gmail.com / 123456
 
-   ```bash
-    npx expo start
-   ```
+Εναλλακτικά, δοκιμάστε αυτό το direct link (αν λειτουργεί): https://expo.dev/artifacts/eas/8NyhW1NGMNv9BqjNu6sgDo.apk
 
-In the output, you'll find options to open the app in a
+## ΕΠΙΛΟΓΗ 2: Πλήρης εγκατάσταση για development
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Αν θέλετε να δείτε τον κώδικα και να τρέξετε την εφαρμογή από την αρχή:
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+Τι χρειάζεστε:
+- Node.js (version 14+)
+- npm ή yarn  
+- Expo CLI (npm install -g expo-cli)
+- Git
 
-## Get a fresh project
+### 1. Frontend (React Native)
 
-When you're ready, run:
-
+Κατεβάστε τον κώδικα:
 ```bash
-npm run reset-project
+git clone https://github.com/Tsiaggas/reserve_app
+cd reserve_app
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Εγκαταστήστε τα packages:
+```bash
+npm install
+```
 
-## Learn more
+Ξεκινήστε την εφαρμογή:
+```bash
+npx expo start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+### 2. Backend (Node.js/Express)
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Πηγαίνετε στον φάκελο backend:
+```bash
+cd backend
+```
 
-## Join the community
+Εγκαταστήστε τα dependencies:
+```bash
+npm install
+```
 
-Join our community of developers creating universal apps.
+Τρέξτε τον server:
+```bash
+npm run dev
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### 3. Βάση δεδομένων
+
+Το project χρησιμοποιεί Supabase. Αν θέλετε να το τρέξετε με τη δική σας βάση:
+1. Δημιουργήστε λογαριασμό στο Supabase ή στην βάση PostgreSQL της αρεσκείας σας
+2. Τρέξτε το schema.sql που υπάρχει στον φάκελο supabase/
+3. Ενημερώστε τα environment variables
+
+SQL Schema
+
+```sql
+-- Πίνακας χρηστών
+CREATE TABLE profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users,
+  name TEXT,
+  email TEXT UNIQUE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Πίνακας εστιατορίων
+CREATE TABLE restaurants (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name TEXT NOT NULL,
+  location TEXT NOT NULL,
+  description TEXT,
+  image_url TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Πίνακας κρατήσεων
+CREATE TABLE reservations (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
+  restaurant_id UUID REFERENCES restaurants(id) ON DELETE CASCADE NOT NULL,
+  date DATE NOT NULL,
+  time TEXT NOT NULL,
+  people_count INTEGER NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Indexes για ταχύτητα
+CREATE INDEX idx_reservations_user ON reservations(user_id);
+CREATE INDEX idx_reservations_restaurant ON reservations(restaurant_id);
+CREATE INDEX idx_restaurant_name ON restaurants(name);
+CREATE INDEX idx_restaurant_location ON restaurants(location);
+```
+
+Λογαριασμός για δοκιμή:
+- Email: user@gmail.com
+- Password: 123456
+
+Ο λογαριασμός δημιουργείται αυτόματα όταν τρέξετε το schema.sql
+
+---
+
+Τι κάνει η εφαρμογή
+
+Αρχιτεκτονική
+
+Η εφαρμογή χτίστηκε με 3 κομμάτια:
+
+1. Frontend (το app στο κινητό)
+- React Native με Expo για Android και iOS
+- React Navigation για την πλοήγηση
+- Hooks για τη διαχείριση των δεδομένων
+
+2. Backend (ο server)  
+- Node.js με Express για το API
+- JWT για ασφαλή σύνδεση χρηστών
+- Middleware για έλεγχο δικαιωμάτων
+
+3. Βάση δεδομένων
+- PostgreSQL μέσω Supabase
+- Κανόνες ασφαλείας σε επίπεδο γραμμών
+- Indexes για γρήγορες αναζητήσεις
+
+Λειτουργίες
+
+Χρήστες:
+- Εγγραφή και σύνδεση με email/password
+- Προβολή και επεξεργασία προφίλ
+- Ασφαλής αποθήκευση κωδικών
+
+Εστιατόρια:
+- Προβολή λίστας εστιατορίων
+- Αναζήτηση με όνομα ή τοποθεσία
+- Λεπτομέρειες για κάθε εστιατόριο
+
+Κρατήσεις:
+- Νέα κράτηση με ημερομηνία, ώρα, άτομα
+- Προβολή του ιστορικού κρατήσεων
+- Ακύρωση κρατήσεων
+
+API Routes
+
+Χρήστες:
+- POST /api/auth/register - Εγγραφή
+- POST /api/auth/login - Σύνδεση  
+- GET /api/users/profile - Προφίλ χρήστη
+
+Εστιατόρια:
+- GET /api/restaurants - Λίστα εστιατορίων
+- GET /api/restaurants/:id - Λεπτομέρειες εστιατορίου
+
+Κρατήσεις:
+- POST /api/reservations - Νέα κράτηση
+- GET /api/reservations - Οι κρατήσεις μου
+- DELETE /api/reservations/:id - Ακύρωση
+
+Σχήμα Βάσης
+
+Πίνακας profiles:
+- id, name, email, created_at
+
+Πίνακας restaurants:  
+- id, name, location, description, image_url, created_at
+
+Πίνακας reservations:
+- id, user_id, restaurant_id, date, time, people_count, created_at
+
+Τεχνολογίες που χρησιμοποιήθηκαν
+
+Frontend: React Native, Expo, TypeScript, React Navigation
+Backend: Node.js, Express, JWT, Supabase
+Database: PostgreSQL (μέσω Supabase)
+Mobile: Expo EAS για Android builds
+
+Deployment
+
+Mobile App: Χτίστηκε με Expo EAS για Android συσκευές
+Database: Hosted στο Supabase
+Backend: Τοπικά για development (δεν είναι deployed)
+
+Σημείωση: Το backend τρέχει τοπικά για την παρουσίαση
+
+Επιπλέον χαρακτηριστικά
+
+- TypeScript για καλύτερη ποιότητα κώδικα
+- Responsive design για όλα τα μεγέθη οθόνης  
+- Επαναχρησιμοποιήσιμα components
+- Διαχείριση σφαλμάτων
+- Ασφαλής διαχείριση environment variables
