@@ -9,14 +9,12 @@ CN6035 - Mobile & Distributed Systems
 
 Αν θέλετε απλά να δοκιμάσετε την εφαρμογή:
 
-1. Πηγαίνετε στο: https://expo.dev/accounts/theodotsis19/projects/res_app/builds
-2. Κάντε κλικ στο πιο πρόσφατο Android build (Status: finished)
-3. Κατεβάστε το APK από το "Artifact" link
-4. Επιτρέψτε την εγκατάσταση από άγνωστες πηγές στο Android
-5. Εγκαταστήστε το APK
-6. Συνδεθείτε με: user@gmail.com / 123456
+1. Κατεβάστε το APK από: https://expo.dev/artifacts/eas/tGXAagZVcTbSefQj5nUM5C.apk
+2. Επιτρέψτε την εγκατάσταση από άγνωστες πηγές στο Android
+3. Εγκαταστήστε το APK
+4. Συνδεθείτε με: user@gmail.com / 123456
 
-Εναλλακτικά, δοκιμάστε αυτό το direct link (αν λειτουργεί): https://expo.dev/artifacts/eas/8NyhW1NGMNv9BqjNu6sgDo.apk
+Εναλλακτικά, για όλα τα διαθέσιμα builds: https://expo.dev/accounts/theodotsis19/projects/res_app/builds
 
 ## ΕΠΙΛΟΓΗ 2: Πλήρης εγκατάσταση για development
 
@@ -63,7 +61,7 @@ npm install
 npm run dev
 ```
 
-### 3. Βάση δεδομένων
+3. Βάση δεδομένων
 
 Το project χρησιμοποιεί Supabase. Αν θέλετε να το τρέξετε με τη δική σας βάση:
 1. Δημιουργήστε λογαριασμό στο Supabase ή στην βάση PostgreSQL της αρεσκείας σας
