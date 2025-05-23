@@ -30,7 +30,7 @@ CN6035 - Mobile & Distributed Systems
 
 Κατεβάστε τον κώδικα:
 ```bash
-git clone https://github.com/Tsiaggas/reserve_app
+git clone https://github.com/Tsiaggas/res_app
 cd reserve_app
 ```
 
